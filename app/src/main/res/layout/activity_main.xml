@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#aaaaaa"
+    android:clipChildren="false">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recy"
+        android:background="#00ff00"
+        android:text="官方文档：https://github.com/square/okhttp/wiki/Interceptors
+拦截器是 OkHttp 提供的对 Http 请求和响应进行统一处理的强大机制，它可以实现网络监听、请求以及响应重写、请求失败充实等功能。
+OkHttp 中的 Interceptor 就是典型的责任链的实现，它可以设置任意数量的 Intercepter 来对网络请求及其响应做任何中间处理，比如设置缓存，Https证书认证，统一对请求加密/防篡改社会，打印log，过滤请求等等。" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
+
+
+    <TextView
+        android:id="@+id/delete_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#7fff0000"
+        android:gravity="center"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"
+        android:text="拖动到此处删除"
+        android:textColor="#7fffffff"
+        android:visibility="invisible" />
+
+</RelativeLayout>
