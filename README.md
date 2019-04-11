@@ -99,9 +99,9 @@ item和delArea都用此方法获取在窗口中的位置。
 
 为了使删除动画不受影响，不可以使用notifyDataSetChanged，同时为了避免全部刷新导致闪烁，所以使用notifyItemRangeChanged的payload的方式局部刷新。将itemview设置为显示即可。
 
-4. 使用方法
-
 ![image](https://github.com/DrJia/PicMgrDemo/blob/master/readme_src/18.png?raw=true)
+
+4. 使用方法
 
 设置，itemHeight，setProportion设置宽高比例，设置水平方向的layoutmanager
 
