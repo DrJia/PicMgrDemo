@@ -116,15 +116,12 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
 
         int scaleItemWidth = (int) (itemWidth * mScale);
         int scaleItemHeight = (int) (itemHeight * mScale);
-        int scaleItemX = itemX;
-        int scaleItemY = itemY;
 
-        int itemLeft = scaleItemX;
-        int itemRight = scaleItemX + scaleItemWidth;
-        int itemTop = scaleItemY;
-        int itemBottom = scaleItemY + scaleItemHeight;
+        int itemRight = itemX + scaleItemWidth;
+        int itemBottom = itemY + scaleItemHeight;
+
         boolean isInside = false;
-        if (itemBottom > delAreaY && itemTop < delAreaY + delAreaHeight && itemRight > delAreaX && itemLeft < delAreaX + delAreaWidth) {
+        if (itemBottom > delAreaY && itemY < delAreaY + delAreaHeight && itemRight > delAreaX && itemX < delAreaX + delAreaWidth) {
             isInside = true;
         } else {
             isInside = false;
