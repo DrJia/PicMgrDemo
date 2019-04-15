@@ -1,6 +1,7 @@
 package com.jiabin.picmgrtest;
 
 import android.graphics.Canvas;
+import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -19,6 +20,7 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
     private int delPos = -1;
     private RecyclerView.ViewHolder tempHolder;
     private float mScale = 1.2f;
+    private float mAlpha = 1.0f;
 
     public PicDragHelperCallback(@NonNull PicMgrAdapter adapter, View delArea) {
         mAdapter = adapter;
@@ -77,6 +79,7 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
             viewHolder.itemView.setScaleX(mScale);
             viewHolder.itemView.setScaleY(mScale);
+            viewHolder.itemView.setAlpha(mAlpha);
             if (mDragListener != null) {
                 mDragListener.onDragStart();
             }
@@ -140,6 +143,7 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         viewHolder.itemView.setScaleX(1.0f);
         viewHolder.itemView.setScaleY(1.0f);
+        viewHolder.itemView.setAlpha(1.0f);
         super.clearView(recyclerView, viewHolder);
     }
 
@@ -167,7 +171,21 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
         mDragListener = listener;
     }
 
+    /**
+     * 设置选中后的放大效果
+     *
+     * @param scale
+     */
     public void setScale(float scale) {
         mScale = scale;
+    }
+
+    /**
+     * 设置选中后的透明效果
+     *
+     * @param alpha
+     */
+    public void setAlpha(@FloatRange(from = 0.0f, to = 1.0f) float alpha) {
+        mAlpha = alpha;
     }
 }

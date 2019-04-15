@@ -1,14 +1,17 @@
 package com.jiabin.picmgrtest;
 
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.graphics.ColorUtils;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     Animation mShowAction;
     Animation mHideAction;
+
+    private Button btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +79,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btn = (Button) findViewById(R.id.btn);
+
         mRecy = (RecyclerView) findViewById(R.id.recy);
         delArea = (TextView) findViewById(R.id.delete_area);
 
-        adapter = new PicMgrAdapter(this,240);
+        adapter = new PicMgrAdapter(this, 240);
         adapter.setProportion(1.0f);
 
         manager = new LinearLayoutManager(this);
@@ -102,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.setPicClickListener(new PicMgrAdapter.PicClickListener() {
             @Override
             public void onPicClick(View view, int pos) {
-                Toast.makeText(getApplicationContext(), "pos:" + pos + " id:" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "pos:" + pos + " id:", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -122,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
         picDragHelperCallback = new PicDragHelperCallback(adapter, delArea);
         picDragHelperCallback.setScale(1.5f);
+        picDragHelperCallback.setAlpha(0.8f);
         helper = new ItemTouchHelper(picDragHelperCallback);
         helper.attachToRecyclerView(mRecy);
 
@@ -138,15 +146,31 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDragAreaChange(boolean isInside) {
-                if(isInside){
+                if (isInside) {
                     delArea.setText("松手即可删除");
                     delArea.setBackgroundColor(0x9fff0000);
                     delArea.setTextColor(0x9fffffff);
-                }else {
+                } else {
                     delArea.setText("拖动到此处删除");
                     delArea.setBackgroundColor(0x7fff0000);
                     delArea.setTextColor(0x7fffffff);
                 }
+            }
+        });
+
+        adapter.setEmptyAnimatorListener(new PicMgrAdapter.EmptyAnimatorListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation, PicMgrAdapter.PicAddViewHolder holder) {
+                float value = (float) animation.getAnimatedValue();
+                int color = ColorUtils.setAlphaComponent(0xffffffff, (int) (255 * value));
+                holder.itemView.setBackgroundColor(color);
+            }
+        });
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapter.startEmptyAnimator(mRecy, 1000L, 0.1f, 0.2f, 0.1f, 0.2f, 0.1f);
             }
         });
     }

@@ -1,5 +1,6 @@
 package com.jiabin.picmgrtest;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,11 +34,16 @@ public class PicMgrAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private int mItemWidth;
     private float mProportion = 1.0f;
 
+    private ValueAnimator emptyAnimator;
+
+    private EmptyAnimatorListener mEmptyAnimatorListener;
+
     public PicMgrAdapter(@NonNull Context context, int itemHeight) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
         mItemHeight = itemHeight;
         mItemWidth = (int) (itemHeight * mProportion);
+        emptyAnimator = new ValueAnimator();
     }
 
     /**
@@ -233,5 +240,64 @@ public class PicMgrAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void setPicClickListener(PicClickListener listener) {
         mPicClickListener = listener;
+    }
+
+    private PicAddViewHolder getPicAddViewHolder(@NonNull RecyclerView recyclerView) {
+        RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(getItemCount() - 1);
+        if (viewHolder == null) {
+            return null;
+        }
+        if (viewHolder instanceof PicAddViewHolder) {
+            return (PicAddViewHolder) viewHolder;
+        } else {
+            return null;
+        }
+    }
+
+    public void startEmptyAnimator(@NonNull RecyclerView recyclerView, long duration, float... values) {
+        if (getItemCount() != 1) {
+            return;
+        }
+        if (emptyAnimator.isRunning()) {
+            return;
+        }
+        PicAddViewHolder picAddViewHolder = getPicAddViewHolder(recyclerView);
+        if (picAddViewHolder == null) {
+            return;
+        }
+        emptyAnimator.removeAllUpdateListeners();
+        emptyAnimator.setFloatValues(values);
+        emptyAnimator.setDuration(duration);
+
+        emptyAnimator.addUpdateListener(new EmptyAnimatorUpdateListener(picAddViewHolder));
+        emptyAnimator.start();
+    }
+
+
+    class EmptyAnimatorUpdateListener implements ValueAnimator.AnimatorUpdateListener {
+
+        private WeakReference<PicAddViewHolder> reference;
+
+        public EmptyAnimatorUpdateListener(PicAddViewHolder picAddViewHolder) {
+            reference = new WeakReference<>(picAddViewHolder);
+        }
+
+        @Override
+        public void onAnimationUpdate(ValueAnimator animation) {
+            if (mEmptyAnimatorListener != null) {
+                PicAddViewHolder picAddViewHolder = reference.get();
+                if (picAddViewHolder != null) {
+                    mEmptyAnimatorListener.onAnimationUpdate(animation, picAddViewHolder);
+                }
+            }
+        }
+    }
+
+    public void setEmptyAnimatorListener(EmptyAnimatorListener listener) {
+        mEmptyAnimatorListener = listener;
+    }
+
+    public interface EmptyAnimatorListener {
+        void onAnimationUpdate(ValueAnimator animation, PicAddViewHolder holder);
     }
 }
