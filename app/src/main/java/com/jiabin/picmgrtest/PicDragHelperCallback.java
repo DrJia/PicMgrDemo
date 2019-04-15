@@ -102,6 +102,9 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        if (delArea == null) {
+            return;
+        }
         int delAreaWidth = delArea.getWidth();
         int delAreaHeight = delArea.getHeight();
 
