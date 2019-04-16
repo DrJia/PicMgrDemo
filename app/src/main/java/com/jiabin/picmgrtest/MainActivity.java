@@ -5,13 +5,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatDrawableManager;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,14 +31,18 @@ public class MainActivity extends AppCompatActivity {
     private PicDragHelperCallback picDragHelperCallback;
     private LinearLayoutManager manager;
 
-    private TextView delArea;
+    private View delArea;
+    private AppCompatImageView delIcon;
 
     int count = 9;
 
     private Handler mHandler = new Handler();
 
-    Animation mShowAction;
-    Animation mHideAction;
+    AnimationSet mShowAction;
+    AnimationSet mHideAction;
+
+    ScaleAnimation mDelShowScaleAnim;
+    ScaleAnimation mDelHideScaleAnim;
 
     private Button btn;
 
@@ -41,15 +51,32 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mShowAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
-        mHideAction = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF, 1.0f);
+        mDelShowScaleAnim = new ScaleAnimation(1.0f, 1.3f, 1.0f, 1.3f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        mDelShowScaleAnim.setFillAfter(true);
+        mDelHideScaleAnim = new ScaleAnimation(1.3f, 1.0f, 1.3f, 1.0f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+
+        ScaleAnimation showScaleAnim = new ScaleAnimation(0.8f, 1.0f, 0.8f, 1.0f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        ScaleAnimation hideScaleAnim = new ScaleAnimation(1.0f, 0.8f, 1.0f, 0.8f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//        AlphaAnimation showAlphaAnim = new AlphaAnimation(0.8f,1.0f);
+//        AlphaAnimation hideAlphaAnim = new AlphaAnimation(0.8f,1.0f);
+
+        mShowAction = new AnimationSet(true);
+        mShowAction.addAnimation(showScaleAnim);
+        //mShowAction.addAnimation(showAlphaAnim);
+
+        mHideAction = new AnimationSet(true);
+        mHideAction.addAnimation(hideScaleAnim);
+        //mHideAction.addAnimation(hideAlphaAnim);
 
         mShowAction.setDuration(300);
         mHideAction.setDuration(300);
         mShowAction.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                delArea.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -82,7 +109,9 @@ public class MainActivity extends AppCompatActivity {
         btn = (Button) findViewById(R.id.btn);
 
         mRecy = (RecyclerView) findViewById(R.id.recy);
-        delArea = (TextView) findViewById(R.id.delete_area);
+        delArea = findViewById(R.id.delete_area);
+        delIcon = (AppCompatImageView) findViewById(R.id.delete_icon);
+        delIcon.setImageResource(R.drawable.ic_edit_delete);
 
         adapter = new PicMgrAdapter(this, 240);
         adapter.setProportion(1.0f);
@@ -136,24 +165,28 @@ public class MainActivity extends AppCompatActivity {
         picDragHelperCallback.setDragListener(new PicDragHelperCallback.DragListener() {
             @Override
             public void onDragStart() {
+                delArea.setVisibility(View.VISIBLE);
                 delArea.startAnimation(mShowAction);
             }
 
             @Override
-            public void onDragFinish() {
+            public void onDragFinish(boolean isInside) {
                 delArea.startAnimation(mHideAction);
             }
 
             @Override
-            public void onDragAreaChange(boolean isInside) {
+            public void onDragAreaChange(boolean isInside , boolean isIdle) {
+                if(isIdle){
+                    return;
+                }
                 if (isInside) {
-                    delArea.setText("松手即可删除");
-                    delArea.setBackgroundColor(0x9fff0000);
-                    delArea.setTextColor(0x9fffffff);
+                    delIcon.setImageResource(R.drawable.ic_edit_deleted);
+                    delArea.setBackgroundColor(0x19ffffff);
+                    delArea.startAnimation(mDelShowScaleAnim);
                 } else {
-                    delArea.setText("拖动到此处删除");
-                    delArea.setBackgroundColor(0x7fff0000);
-                    delArea.setTextColor(0x7fffffff);
+                    delIcon.setImageResource(R.drawable.ic_edit_delete);
+                    delArea.setBackgroundColor(0x0dffffff);
+                    delArea.startAnimation(mDelHideScaleAnim);
                 }
             }
         });

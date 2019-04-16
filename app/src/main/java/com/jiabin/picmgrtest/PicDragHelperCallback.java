@@ -88,7 +88,7 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
             Log.d("jiabin", "delPos:" + delPos);
         } else {
             if (mDragListener != null) {
-                mDragListener.onDragFinish();
+                mDragListener.onDragFinish(mIsInside);
             }
             if (mIsInside && delPos >= 0 && tempHolder != null) {
                 tempHolder.itemView.setVisibility(View.INVISIBLE);
@@ -103,6 +103,7 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
         if (delArea == null) {
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             return;
         }
         int delAreaWidth = delArea.getWidth();
@@ -134,7 +135,7 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
         }
         if (isInside != mIsInside) {
             if (mDragListener != null) {
-                mDragListener.onDragAreaChange(isInside);
+                mDragListener.onDragAreaChange(isInside , tempHolder == null);
             }
         }
         mIsInside = isInside;
@@ -165,9 +166,9 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
     public interface DragListener {
         void onDragStart();
 
-        void onDragFinish();
+        void onDragFinish(boolean isInside);
 
-        void onDragAreaChange(boolean isInside);
+        void onDragAreaChange(boolean isInside , boolean isIdle);
     }
 
     public void setDragListener(DragListener listener) {

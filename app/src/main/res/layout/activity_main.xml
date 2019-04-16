@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#222222"
     android:clipChildren="false">
 
@@ -31,17 +32,19 @@ OkHttp 中的 Interceptor 就是典型的责任链的实现，它可以设置任
         android:scrollbars="none" />
 
 
-    <TextView
+    <RelativeLayout
         android:id="@+id/delete_area"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="#7fff0000"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_centerInParent="true"
+        android:background="#0dffffff"
         android:gravity="center"
-        android:paddingTop="30dp"
-        android:paddingBottom="30dp"
-        android:text="拖动到此处删除"
-        android:textColor="#7fffffff"
-        android:visibility="invisible" />
+        android:visibility="invisible">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/delete_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+    </RelativeLayout>
 
 </RelativeLayout>

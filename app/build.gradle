@@ -5,10 +5,11 @@ android {
     defaultConfig {
         applicationId "com.jiabin.picmgrtest"
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
