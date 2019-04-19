@@ -5,7 +5,7 @@ android {
     defaultConfig {
         applicationId "com.jiabin.picmgrtest"
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

@@ -137,12 +137,10 @@ public class PicMgrAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_PIC) {
             View view = mInflater.inflate(R.layout.item_pic, parent, false);
-            PicViewHolder picViewHolder = new PicViewHolder(view);
-            return picViewHolder;
+            return new PicViewHolder(view);
         } else if (viewType == TYPE_PIC_ADD) {
             View view = mInflater.inflate(R.layout.item_pic_add, parent, false);
-            PicAddViewHolder picAddViewHolder = new PicAddViewHolder(view);
-            return picAddViewHolder;
+            return new PicAddViewHolder(view);
         }
         return null;
     }
