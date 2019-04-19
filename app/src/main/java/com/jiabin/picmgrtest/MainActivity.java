@@ -157,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         picDragHelperCallback = new PicDragHelperCallback(adapter, delArea);
-        picDragHelperCallback.setScale(1.5f);
-        picDragHelperCallback.setAlpha(0.8f);
+        picDragHelperCallback.setScale(1.3f);
+        picDragHelperCallback.setAlpha(0.9f);
         helper = new ItemTouchHelper(picDragHelperCallback);
         helper.attachToRecyclerView(mRecy);
 

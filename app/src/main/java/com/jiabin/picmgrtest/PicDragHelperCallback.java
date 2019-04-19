@@ -22,6 +22,11 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
     private float mScale = 1.2f;
     private float mAlpha = 1.0f;
 
+    private float mInsideScale = 0.86f;
+    private float mInsideAlpha = 0.3f;
+
+    private float mMoveScale = mScale;
+
     public PicDragHelperCallback(@NonNull PicMgrAdapter adapter, View delArea) {
         mAdapter = adapter;
         this.delArea = delArea;
@@ -121,21 +126,47 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
         int itemX = itemLocation[0];
         int itemY = itemLocation[1];
 
-        int scaleItemWidth = (int) (itemWidth * mScale);
-        int scaleItemHeight = (int) (itemHeight * mScale);
+        //Log.d("jiabin","itemWidth:" + itemWidth + " | itemHeight:" + itemHeight + " | itemX:" + itemX + " | itemY:" + itemY);
 
-        int itemRight = itemX + scaleItemWidth;
-        int itemBottom = itemY + scaleItemHeight;
+        int scaleItemWidth = (int) (itemWidth * mMoveScale);
+        int scaleItemHeight = (int) (itemHeight * mMoveScale);
+
+//        int scaleItemWidth = itemWidth;
+//        int scaleItemHeight = itemHeight;
+
+//        int itemRight = itemX + scaleItemWidth;
+//        int itemBottom = itemY + scaleItemHeight;
+
+        int centerX = itemX + scaleItemWidth / 2;
+        int centerY = itemY + scaleItemHeight / 2;
 
         boolean isInside = false;
-        if (itemBottom > delAreaY && itemY < delAreaY + delAreaHeight && itemRight > delAreaX && itemX < delAreaX + delAreaWidth) {
+//        if (itemBottom > delAreaY && itemY < delAreaY + delAreaHeight && itemRight > delAreaX && itemX < delAreaX + delAreaWidth) {
+//            isInside = true;
+//        } else {
+//            isInside = false;
+//        }
+        if (centerY > delAreaY && centerY < delAreaY + delAreaHeight && centerX > delAreaX && centerX < delAreaX + delAreaWidth) {
             isInside = true;
         } else {
             isInside = false;
         }
         if (isInside != mIsInside) {
+            if(tempHolder != null){
+                if (isInside){
+                    mMoveScale = mInsideScale;
+                    viewHolder.itemView.setScaleX(mInsideScale);
+                    viewHolder.itemView.setScaleY(mInsideScale);
+                    viewHolder.itemView.setAlpha(mInsideAlpha);
+                }else {
+                    mMoveScale = mScale;
+                    viewHolder.itemView.setScaleX(mScale);
+                    viewHolder.itemView.setScaleY(mScale);
+                    viewHolder.itemView.setAlpha(mAlpha);
+                }
+            }
             if (mDragListener != null) {
-                mDragListener.onDragAreaChange(isInside , tempHolder == null);
+                mDragListener.onDragAreaChange(isInside, tempHolder == null);
             }
         }
         mIsInside = isInside;
@@ -168,7 +199,7 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
 
         void onDragFinish(boolean isInside);
 
-        void onDragAreaChange(boolean isInside , boolean isIdle);
+        void onDragAreaChange(boolean isInside, boolean isIdle);
     }
 
     public void setDragListener(DragListener listener) {
@@ -182,6 +213,7 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
      */
     public void setScale(float scale) {
         mScale = scale;
+        mMoveScale = mScale;
     }
 
     /**
