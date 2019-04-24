@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,9 +29,21 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
 
     private float mMoveScale = mScale;
 
+//    private ScaleAnimation mInScaleAnim;
+//    private ScaleAnimation mOutScaleAnim;
+
     public PicDragHelperCallback(@NonNull PicMgrAdapter adapter, View delArea) {
         mAdapter = adapter;
         this.delArea = delArea;
+
+//        mInScaleAnim = new ScaleAnimation(1.0f, mInsideScale / mMoveScale, 1.0f, mInsideScale / mMoveScale,
+//                Animation.RELATIVE_TO_PARENT, 0.5f, Animation.RELATIVE_TO_PARENT, 0.5f);
+//        mInScaleAnim.setFillAfter(true);
+//        mInScaleAnim.setDuration(300);
+//        mOutScaleAnim = new ScaleAnimation(mInsideScale / mMoveScale, 1.0f, mInsideScale / mMoveScale, 1.0f,
+//                Animation.RELATIVE_TO_PARENT, 0.5f, Animation.RELATIVE_TO_PARENT, 0.5f);
+//        mOutScaleAnim.setDuration(300);
+
     }
 
     @Override
@@ -158,11 +172,15 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
                     viewHolder.itemView.setScaleX(mInsideScale);
                     viewHolder.itemView.setScaleY(mInsideScale);
                     viewHolder.itemView.setAlpha(mInsideAlpha);
+                    //viewHolder.itemView.clearAnimation();
+                    //viewHolder.itemView.startAnimation(mInScaleAnim);
                 }else {
                     mMoveScale = mScale;
                     viewHolder.itemView.setScaleX(mScale);
                     viewHolder.itemView.setScaleY(mScale);
                     viewHolder.itemView.setAlpha(mAlpha);
+                    //viewHolder.itemView.clearAnimation();
+                    //viewHolder.itemView.startAnimation(mOutScaleAnim);
                 }
             }
             if (mDragListener != null) {
@@ -214,6 +232,14 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
     public void setScale(float scale) {
         mScale = scale;
         mMoveScale = mScale;
+
+//        mInScaleAnim = new ScaleAnimation(1.0f, mInsideScale / mMoveScale, 1.0f, mInsideScale / mMoveScale,
+//                Animation.RELATIVE_TO_SELF, 0.5f * mMoveScale, Animation.RELATIVE_TO_SELF, 1.5f * mMoveScale / mInsideScale);
+//        mInScaleAnim.setFillAfter(true);
+//        mInScaleAnim.setDuration(300);
+//        mOutScaleAnim = new ScaleAnimation(mInsideScale / mMoveScale, 1.0f, mInsideScale / mMoveScale, 1.0f,
+//                Animation.RELATIVE_TO_SELF, 0.5f * mMoveScale, Animation.RELATIVE_TO_SELF, 1.5f * mMoveScale / mInsideScale);
+//        mOutScaleAnim.setDuration(300);
     }
 
     /**

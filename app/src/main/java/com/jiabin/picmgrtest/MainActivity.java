@@ -38,11 +38,11 @@ public class MainActivity extends AppCompatActivity {
 
     private Handler mHandler = new Handler();
 
-    AnimationSet mShowAction;
-    AnimationSet mHideAction;
+    private AnimationSet mShowAction;
+    private AnimationSet mHideAction;
 
-    ScaleAnimation mDelShowScaleAnim;
-    ScaleAnimation mDelHideScaleAnim;
+    private ScaleAnimation mDelShowScaleAnim;
+    private ScaleAnimation mDelHideScaleAnim;
 
     private Button btn;
 
@@ -54,8 +54,10 @@ public class MainActivity extends AppCompatActivity {
         mDelShowScaleAnim = new ScaleAnimation(1.0f, 1.3f, 1.0f, 1.3f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         mDelShowScaleAnim.setFillAfter(true);
+        mDelShowScaleAnim.setDuration(300);
         mDelHideScaleAnim = new ScaleAnimation(1.3f, 1.0f, 1.3f, 1.0f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        mDelHideScaleAnim.setDuration(300);
 
         ScaleAnimation showScaleAnim = new ScaleAnimation(0.8f, 1.0f, 0.8f, 1.0f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -157,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         picDragHelperCallback = new PicDragHelperCallback(adapter, delArea);
-        picDragHelperCallback.setScale(1.3f);
+        picDragHelperCallback.setScale(1.3f);//1.3f
         picDragHelperCallback.setAlpha(0.9f);
         helper = new ItemTouchHelper(picDragHelperCallback);
         helper.attachToRecyclerView(mRecy);
