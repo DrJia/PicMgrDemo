@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private ScaleAnimation mDelShowScaleAnim;
     private ScaleAnimation mDelHideScaleAnim;
 
-    private Button btn;
+    private TextView btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,28 +54,28 @@ public class MainActivity extends AppCompatActivity {
         mDelShowScaleAnim = new ScaleAnimation(1.0f, 1.3f, 1.0f, 1.3f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         mDelShowScaleAnim.setFillAfter(true);
-        mDelShowScaleAnim.setDuration(300);
+        mDelShowScaleAnim.setDuration(150);
         mDelHideScaleAnim = new ScaleAnimation(1.3f, 1.0f, 1.3f, 1.0f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        mDelHideScaleAnim.setDuration(300);
+        mDelHideScaleAnim.setDuration(150);
 
         ScaleAnimation showScaleAnim = new ScaleAnimation(0.8f, 1.0f, 0.8f, 1.0f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         ScaleAnimation hideScaleAnim = new ScaleAnimation(1.0f, 0.8f, 1.0f, 0.8f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-//        AlphaAnimation showAlphaAnim = new AlphaAnimation(0.8f,1.0f);
-//        AlphaAnimation hideAlphaAnim = new AlphaAnimation(0.8f,1.0f);
+        AlphaAnimation showAlphaAnim = new AlphaAnimation(0.0f,1.0f);
+        AlphaAnimation hideAlphaAnim = new AlphaAnimation(1.0f,0.0f);
 
         mShowAction = new AnimationSet(true);
         mShowAction.addAnimation(showScaleAnim);
-        //mShowAction.addAnimation(showAlphaAnim);
+        mShowAction.addAnimation(showAlphaAnim);
 
         mHideAction = new AnimationSet(true);
         mHideAction.addAnimation(hideScaleAnim);
-        //mHideAction.addAnimation(hideAlphaAnim);
+        mHideAction.addAnimation(hideAlphaAnim);
 
-        mShowAction.setDuration(300);
-        mHideAction.setDuration(300);
+        mShowAction.setDuration(150);
+        mHideAction.setDuration(150);
         mShowAction.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
                     delIcon.setImageResource(R.drawable.ic_edit_deleted);
                     delArea.setBackgroundColor(0x19ffffff);
                     delArea.startAnimation(mDelShowScaleAnim);
+                    ShakeUtil.vibrator(MainActivity.this,100);
                 } else {
                     delIcon.setImageResource(R.drawable.ic_edit_delete);
                     delArea.setBackgroundColor(0x0dffffff);

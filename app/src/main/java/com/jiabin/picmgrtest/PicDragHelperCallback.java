@@ -1,11 +1,15 @@
 package com.jiabin.picmgrtest;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.FloatProperty;
 import android.util.Log;
+import android.util.Property;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -90,14 +94,66 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
         return super.getAnimationDuration(recyclerView, animationType, animateDx, animateDy);
     }
 
+    private void startActivatingAnim(View view, float from, float to, long duration) {
+        Object tag = view.getTag();
+        if (tag instanceof ObjectAnimator) {
+            return;
+        }
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, scaleProperty, from, to);
+        animator.setDuration(duration);
+        animator.start();
+        view.setTag(animator);
+    }
+
+    private boolean isActivatingAniming(View view){
+        Object tag = view.getTag();
+        if (tag instanceof ObjectAnimator) {
+            ObjectAnimator animator = (ObjectAnimator) tag;
+            if(animator.isRunning()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void clearActivatingAnim(View view) {
+        Object tag = view.getTag();
+        if (tag instanceof ObjectAnimator) {
+            ObjectAnimator animator = (ObjectAnimator) tag;
+            animator.cancel();
+            view.setTag(null);
+        }
+    }
+
+    private ScaleProperty scaleProperty = new ScaleProperty("scale");
+
+    public static class ScaleProperty extends Property<View, Float> {
+        public ScaleProperty(String name) {
+            super(Float.class, name);
+        }
+
+        @Override
+        public Float get(View object) {
+            return object.getScaleX();
+        }
+
+        @Override
+        public void set(View object, Float value) {
+            object.setScaleX(value);
+            object.setScaleY(value);
+        }
+    }
+
     @Override
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
         // 不在闲置状态
         Log.d("jiabin", "onSelectedChanged:" + actionState);
         //mActionState = actionState;
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-            viewHolder.itemView.setScaleX(mScale);
-            viewHolder.itemView.setScaleY(mScale);
+//            viewHolder.itemView.setScaleX(mScale);
+//            viewHolder.itemView.setScaleY(mScale);
+            clearActivatingAnim(viewHolder.itemView);
+            startActivatingAnim(viewHolder.itemView, 1.0f, mScale, 200);
             viewHolder.itemView.setAlpha(mAlpha);
             if (mDragListener != null) {
                 mDragListener.onDragStart();
@@ -121,7 +177,7 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        if (delArea == null) {
+        if (delArea == null || isActivatingAniming(viewHolder.itemView)) {
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             return;
         }
@@ -166,18 +222,22 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
             isInside = false;
         }
         if (isInside != mIsInside) {
-            if(tempHolder != null){
-                if (isInside){
+            if (tempHolder != null) {
+                if (isInside) {
                     mMoveScale = mInsideScale;
-                    viewHolder.itemView.setScaleX(mInsideScale);
-                    viewHolder.itemView.setScaleY(mInsideScale);
+//                    viewHolder.itemView.setScaleX(mInsideScale);
+//                    viewHolder.itemView.setScaleY(mInsideScale);
+                    clearActivatingAnim(viewHolder.itemView);
+                    startActivatingAnim(viewHolder.itemView, mScale, mInsideScale, 150);
                     viewHolder.itemView.setAlpha(mInsideAlpha);
                     //viewHolder.itemView.clearAnimation();
                     //viewHolder.itemView.startAnimation(mInScaleAnim);
-                }else {
+                } else {
                     mMoveScale = mScale;
-                    viewHolder.itemView.setScaleX(mScale);
-                    viewHolder.itemView.setScaleY(mScale);
+//                    viewHolder.itemView.setScaleX(mScale);
+//                    viewHolder.itemView.setScaleY(mScale);
+                    clearActivatingAnim(viewHolder.itemView);
+                    startActivatingAnim(viewHolder.itemView, mInsideScale, mScale, 150);
                     viewHolder.itemView.setAlpha(mAlpha);
                     //viewHolder.itemView.clearAnimation();
                     //viewHolder.itemView.startAnimation(mOutScaleAnim);
@@ -194,8 +254,10 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        viewHolder.itemView.setScaleX(1.0f);
-        viewHolder.itemView.setScaleY(1.0f);
+        clearActivatingAnim(viewHolder.itemView);
+        startActivatingAnim(viewHolder.itemView, mScale, 1.0f, 150);
+//        viewHolder.itemView.setScaleX(1.0f);
+//        viewHolder.itemView.setScaleY(1.0f);
         viewHolder.itemView.setAlpha(1.0f);
         super.clearView(recyclerView, viewHolder);
     }
