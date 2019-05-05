@@ -105,11 +105,11 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
         view.setTag(animator);
     }
 
-    private boolean isActivatingAniming(View view){
+    private boolean isActivatingAniming(View view) {
         Object tag = view.getTag();
         if (tag instanceof ObjectAnimator) {
             ObjectAnimator animator = (ObjectAnimator) tag;
-            if(animator.isRunning()){
+            if (animator.isRunning()) {
                 return true;
             }
         }
@@ -147,7 +147,7 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
     @Override
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
         // 不在闲置状态
-        Log.d("jiabin", "onSelectedChanged:" + actionState);
+        //Log.d("jiabin", "onSelectedChanged:" + actionState);
         //mActionState = actionState;
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
 //            viewHolder.itemView.setScaleX(mScale);
@@ -160,14 +160,20 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
             }
             delPos = viewHolder.getAdapterPosition();
             tempHolder = viewHolder;
-            Log.d("jiabin", "delPos:" + delPos);
+            //Log.d("jiabin", "delPos:" + delPos);
         } else {
             if (mDragListener != null) {
                 mDragListener.onDragFinish(mIsInside);
             }
             if (mIsInside && delPos >= 0 && tempHolder != null) {
+//                clearActivatingAnim(tempHolder.itemView);
+//                tempHolder.itemView.setScaleX(1.0f);
+//                tempHolder.itemView.setScaleY(1.0f);
+//                tempHolder.itemView.setAlpha(1.0f);
+
                 tempHolder.itemView.setVisibility(View.INVISIBLE);
                 mAdapter.removeItemFromDrag(delPos);
+                mIsInside = false;
             }
             delPos = -1;
             tempHolder = null;

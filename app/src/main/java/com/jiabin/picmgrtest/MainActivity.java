@@ -10,6 +10,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -63,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
         ScaleAnimation hideScaleAnim = new ScaleAnimation(1.0f, 0.8f, 1.0f, 0.8f,
                 Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        AlphaAnimation showAlphaAnim = new AlphaAnimation(0.0f,1.0f);
-        AlphaAnimation hideAlphaAnim = new AlphaAnimation(1.0f,0.0f);
+        AlphaAnimation showAlphaAnim = new AlphaAnimation(0.0f, 1.0f);
+        AlphaAnimation hideAlphaAnim = new AlphaAnimation(1.0f, 0.0f);
 
         mShowAction = new AnimationSet(true);
         mShowAction.addAnimation(showScaleAnim);
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         mShowAction.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
+                //delArea.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -167,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
         picDragHelperCallback.setDragListener(new PicDragHelperCallback.DragListener() {
             @Override
             public void onDragStart() {
+                delArea.clearAnimation();
                 delArea.setVisibility(View.VISIBLE);
                 delArea.startAnimation(mShowAction);
             }
@@ -174,18 +177,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDragFinish(boolean isInside) {
                 delArea.startAnimation(mHideAction);
+                delIcon.setImageResource(R.drawable.ic_edit_delete);
+                delArea.setBackgroundColor(0x0dffffff);
             }
 
             @Override
-            public void onDragAreaChange(boolean isInside , boolean isIdle) {
-                if(isIdle){
+            public void onDragAreaChange(boolean isInside, boolean isIdle) {
+                Log.d("jiabin", "isInside:" + isInside + " | isIdle:" + isIdle);
+                if (isIdle) {
                     return;
                 }
                 if (isInside) {
                     delIcon.setImageResource(R.drawable.ic_edit_deleted);
                     delArea.setBackgroundColor(0x19ffffff);
                     delArea.startAnimation(mDelShowScaleAnim);
-                    ShakeUtil.vibrator(MainActivity.this,100);
+                    ShakeUtil.vibrator(MainActivity.this, 100);
                 } else {
                     delIcon.setImageResource(R.drawable.ic_edit_delete);
                     delArea.setBackgroundColor(0x0dffffff);
