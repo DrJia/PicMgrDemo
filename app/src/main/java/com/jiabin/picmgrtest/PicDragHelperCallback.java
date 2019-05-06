@@ -75,6 +75,8 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
         }
         int from = viewHolder.getAdapterPosition();
         int endPosition = target.getAdapterPosition();
+        Log.d("jiabin", "onMove from:" + from + " end:" + endPosition);
+        delPos = endPosition;
         Collections.swap(list, from, endPosition);
         mAdapter.notifyItemMoved(from, endPosition);
         return true;
@@ -160,7 +162,7 @@ public class PicDragHelperCallback extends ItemTouchHelper.Callback {
             }
             delPos = viewHolder.getAdapterPosition();
             tempHolder = viewHolder;
-            //Log.d("jiabin", "delPos:" + delPos);
+            Log.d("jiabin", "onSelectedChanged delPos:" + delPos);
         } else {
             if (mDragListener != null) {
                 mDragListener.onDragFinish(mIsInside);

@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.setPicClickListener(new PicMgrAdapter.PicClickListener() {
             @Override
             public void onPicClick(View view, int pos) {
-                Toast.makeText(getApplicationContext(), "pos:" + pos + " id:", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "pos:" + pos + " id:" + adapter.getList().get(pos).id, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDragAreaChange(boolean isInside, boolean isIdle) {
-                Log.d("jiabin", "isInside:" + isInside + " | isIdle:" + isIdle);
+                //Log.d("jiabin", "isInside:" + isInside + " | isIdle:" + isIdle);
                 if (isIdle) {
                     return;
                 }
